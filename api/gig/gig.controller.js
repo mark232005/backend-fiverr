@@ -5,7 +5,10 @@ export async function getGigs(req, res) {
     try {
         const filterBy = {
             txt: req.query.txt || '',
-            minSpeed: +req.query.minSpeed || 0,
+            category: req.query.category || '',
+            level: req.query.level || '',
+            price: req.query.price || '',
+            deliveryTime: req.query.deliveryTime || '',
             sortField: req.query.sortField || '',
             sortDir: req.query.sortDir || 1,
             pageIdx: req.query.pageIdx,

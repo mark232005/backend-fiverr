@@ -88,7 +88,14 @@ async function add(gig) {
 }
 
 async function update(gig) {
-    const gigToSave = { vendor: gig.vendor, speed: gig.speed }
+    const gigToSave = { 
+        title: gig.title, 
+        description: gig.description,
+        category: gig.category,
+        price: gig.price,
+        daysToMake: gig.daysToMake,
+        imgUrls: gig.imgUrls
+    }
 
     try {
         const criteria = { _id: ObjectId.createFromHexString(gig._id) }
@@ -132,9 +139,54 @@ async function removeGigMsg(gigId, msgId) {
 }
 
 function _buildCriteria(filterBy) {
-    const criteria = {
-        vendor: { $regex: filterBy.txt, $options: 'i' },
-        speed: { $gte: filterBy.minSpeed },
+    const criteria = {}
+
+    // Text search in title and description
+    if (filterBy.txt) {
+        criteria.$or = [
+            { title: { $regex: filterBy.txt, $options: 'i' } },
+            { description: { $regex: filterBy.txt, $options: 'i' } }
+        ]
+    }
+
+    // Category filter
+    if (filterBy.category) {
+        criteria.category = filterBy.category
+    }
+
+    // Level filter (owner level)
+    if (filterBy.level) {
+        criteria['owner.level'] = filterBy.level
+    }
+
+    // Price filter
+    if (filterBy.price) {
+        if (filterBy.price === 'Under 50₪') {
+            criteria.price = { $lt: 50 }
+        } else if (filterBy.price === '50₪–105₪') {
+            criteria.price = { $gte: 50, $lte: 105 }
+        } else if (filterBy.price === '105₪ and above') {
+            criteria.price = { $gt: 105 }
+        }
+    }
+
+    // Delivery time filter
+    if (filterBy.deliveryTime) {
+        let deliveryTime
+        switch (filterBy.deliveryTime) {
+            case 'Express 24H':
+                deliveryTime = 1
+                break
+            case 'Up to 3 days':
+                deliveryTime = 3
+                break
+            case 'Up to 7 days':
+                deliveryTime = 7
+                break
+        }
+        if (deliveryTime) {
+            criteria.daysToMake = { $lte: deliveryTime }
+        }
     }
 
     return criteria
