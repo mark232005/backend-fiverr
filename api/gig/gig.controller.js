@@ -1,3 +1,4 @@
+import { log } from '../../middlewares/logger.middleware.js'
 import { logger } from '../../services/logger.service.js'
 import { gigService } from './gig.service.js'
 
@@ -24,7 +25,9 @@ export async function getGigs(req, res) {
 export async function getGigById(req, res) {
     try {
         const gigId = req.params.id
+        console.log('111111 gigId', gigId);
         const gig = await gigService.getById(gigId)
+        console.log('111111 2');
         res.json(gig)
     } catch (err) {
         logger.error('Failed to get gig', err)

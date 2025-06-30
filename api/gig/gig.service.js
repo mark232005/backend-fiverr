@@ -17,7 +17,12 @@ export const gigService = {
     removeGigMsg,
 }
 
-async function query(filterBy = { txt: '' }) {
+export const orderService = {
+    query,
+    add
+}
+
+async function query(filterBy = {}) {
     try {
         const criteria = _buildCriteria(filterBy)
         const sort = _buildSort(filterBy)
@@ -40,8 +45,8 @@ async function query(filterBy = { txt: '' }) {
 
 async function getById(gigId) {
     try {
+        console.log('gigId',gigId)
         const criteria = { _id: ObjectId.createFromHexString(gigId) }
-
         const collection = await dbService.getCollection('gig')
         const gig = await collection.findOne(criteria)
 
@@ -195,4 +200,26 @@ function _buildCriteria(filterBy) {
 function _buildSort(filterBy) {
     if (!filterBy.sortField) return {}
     return { [filterBy.sortField]: filterBy.sortDir }
+}
+
+async function queryOrders() {
+    try {
+        const collection = await dbService.getCollection('order')
+        const orders = await collection.find({}).toArray()
+        return orders
+    } catch (err) {
+        logger.error('Cannot find orders', err)
+        throw err
+    }
+}
+
+async function addOrder(order) {
+    try {
+        const collection = await dbService.getCollection('order')
+        await collection.insertOne(order)
+        return order
+    } catch (err) {
+        logger.error('Cannot insert order', err)
+        throw err
+    }
 }
