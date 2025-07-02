@@ -1,4 +1,4 @@
 export default {
-  dbURL: 'mongodb+srv://dimaaluf:zBeLdvq2hoCnKojY@cluster0.kj0lh0z.mongodb.net/',
+  dbURL: 'mongodb+srv://dimaaluf:1234@cluster0.kj0lh0z.mongodb.net/',
   dbName : 'gig_db'
 }
