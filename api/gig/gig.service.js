@@ -58,27 +58,44 @@ async function getById(gigId) {
     }
 }
 
-async function remove(gigId) {
-    const { loggedinUser } = asyncLocalStorage.getStore()
-    const { _id: ownerId, isAdmin } = loggedinUser
+// async function remove(gigId) {
+//     const { loggedinUser } = asyncLocalStorage.getStore()
+//     const { _id: ownerId, isAdmin } = loggedinUser
 
+//     try {
+//         const criteria = {
+//             _id: ObjectId.createFromHexString(gigId),
+//         }
+
+//         if (!isAdmin) criteria['owner._id'] = ownerId
+
+//         const collection = await dbService.getCollection('gig')
+//         const res = await collection.deleteOne(criteria)
+
+//         if (res.deletedCount === 0) throw ('Not your gig')
+//         return gigId
+//     } catch (err) {
+//         logger.error(`cannot remove gig ${gigId}`, err)
+//         throw err
+//     }
+// }
+async function remove(gigId) {
     try {
         const criteria = {
             _id: ObjectId.createFromHexString(gigId),
         }
 
-        if (!isAdmin) criteria['owner._id'] = ownerId
-
         const collection = await dbService.getCollection('gig')
         const res = await collection.deleteOne(criteria)
 
-        if (res.deletedCount === 0) throw ('Not your gig')
+        if (res.deletedCount === 0) throw new Error('Gig not found')
         return gigId
     } catch (err) {
         logger.error(`cannot remove gig ${gigId}`, err)
         throw err
     }
 }
+
 
 async function add(gig) {
     try {

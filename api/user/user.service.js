@@ -83,7 +83,6 @@ async function update(user) {
         const userToSave = {
             _id: ObjectId.createFromHexString(user._id), // needed for the returnd obj
             fullname: user.fullname,
-            score: user.score,
         }
         const collection = await dbService.getCollection('user')
         await collection.updateOne({ _id: userToSave._id }, { $set: userToSave })
@@ -98,12 +97,16 @@ async function add(user) {
     try {
         // peek only updatable fields!
         const userToAdd = {
+            _id: user._id, 
             username: user.username,
-            password: user.password,
-            fullname: user.fullname,
-            imgUrl: user.imgUrl,
+            fullname: user.fullname, 
             isAdmin: user.isAdmin,
-            score: 100,
+            imgUrl: user.imgUrl,
+            located: user.located,
+            skills: user.skills,
+            languages: user.languages,
+            about: user.about,
+            createdAt: user.createdAt    
         }
         const collection = await dbService.getCollection('user')
         await collection.insertOne(userToAdd)
